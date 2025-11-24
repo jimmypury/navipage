@@ -3,93 +3,10 @@ body {
 	background-size: cover;
 }
 
-#baidusearch,
-#googlesearch,
-#bingsearch {
-	background-color: rgba(245, 245, 245, 0.5);
-	transition: background-color 1s;
-}
-
-#baidusearch:hover,
-#googlesearch:hover,
-#bingsearch:hover {
-	background-color: rgba(245, 245, 245, 0.9);
-}
-
-#hyperlink-code,
-#hyperlink-daily-domestic,
-#hyperlink-daily-oversea,
-#hyperlink-tool,
-#hyperlink-shop,
-#hyperlink-mail,
-#hyperlink-learning,
-#hyperlink-personal {
-	background-color: rgba(245, 245, 245, 0.5);
-	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), 0 6px 20px rgba(0, 0, 0, 0.19);
-	transition: background-color 1s;
-}
-
-#hyperlink-code:hover,
-#hyperlink-daily-domestic:hover,
-#hyperlink-daily-oversea:hover,
-#hyperlink-tool:hover,
-#hyperlink-shop:hover,
-#hyperlink-mail:hover,
-#hyperlink-learning:hover,
-#hyperlink-personal:hover {
-	background-color: rgba(245, 245, 245, 0.9);
-}
-
-#hyperlink-code a,
-#hyperlink-daily-domestic a,
-#hyperlink-daily-oversea a,
-#hyperlink-tool a,
-#hyperlink-shop a,
-#hyperlink-mail a,
-#hyperlink-learning a,
-#hyperlink-personal a {
-	border-radius: 5px;
-	color: #000;
-	text-align: center;
-	text-decoration: none;
-	font-size: 1.3em;
-	line-height: 2em;
-	transition: background-color 0.5s;
-}
-
-#hyperlink-code a:hover,
-#hyperlink-daily-domestic a:hover,
-#hyperlink-daily-oversea a:hover,
-#hyperlink-tool a:hover,
-#hyperlink-shop a:hover,
-#hyperlink-mail a:hover,
-#hyperlink-learning a:hover,
-#hyperlink-personal a:hover {
-	background-color: #696969;
-	color: #f5f5f5;
-}
-
-.timeset {
-	color: grey;
-	text-align: center;
-}
-
 .head {
 	color: grey;
 	text-align: center;
 	text-shadow: 2px 2px 10px grey;
-}
-
-.left {
-	float: left;
-	margin: 5px;
-	padding: 5px;
-}
-
-.right {
-	float: right;
-	margin: 5px;
-	padding: 5px;
 }
 
 .foot {
@@ -106,4 +23,416 @@ body {
 .foot a:hover {
 	color: #000000;
 	text-decoration: none;
+}
+
+/* Migrated styles from index.html */
+.drag-handle {
+	padding: 5px;
+	display: inline-block;
+	cursor: move;
+	color: #999;
+}
+
+.panel-heading-custom.drag-handle {
+	cursor: move;
+}
+
+.link-item.dragging {
+	cursor: move;
+}
+
+.link-edit-icons {
+	display: inline-block;
+	white-space: nowrap;
+	position: absolute;
+	top: 2px;
+	right: 2px;
+	background: rgba(255, 255, 255, 0.9);
+	padding: 2px 4px;
+	border-radius: 3px;
+	opacity: 0;
+	transition: opacity 0.2s;
+}
+
+.link-module a:hover .link-edit-icons {
+	opacity: 1;
+}
+
+.link-edit-icons i {
+	margin-left: 3px;
+	cursor: pointer;
+	font-size: 14px;
+}
+
+.edit-buttons {
+	position: absolute;
+	right: 10px;
+	top: 50%;
+	transform: translateY(-50%);
+}
+
+.edit-buttons button {
+	margin-left: 5px;
+}
+
+.sortable-ghost {
+	opacity: 0.4;
+}
+
+.add-module-btn {
+	min-height: 150px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	border: 2px dashed #ccc;
+	background-color: rgba(245, 245, 245, 0.3);
+	transition: all 0.3s;
+}
+
+.add-module-btn:hover {
+	background-color: rgba(245, 245, 245, 0.6);
+	border-color: #999;
+}
+
+.add-module-btn i {
+	font-size: 48px;
+	color: #999;
+}
+
+.modal {
+	display: block;
+	position: fixed;
+	z-index: 1050;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+	background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-dialog {
+	position: relative;
+	width: 60%;
+	max-width: 800px;
+	min-width: 320px;
+	margin: 30px auto;
+}
+
+@media (max-width: 768px) {
+	.modal-dialog {
+		width: 90%;
+		min-width: 300px;
+		margin: 20px auto;
+	}
+}
+
+.link-favicon {
+	width: 16px;
+	height: 16px;
+	margin-right: 5px;
+	display: inline-block;
+}
+
+.panel-heading-custom {
+	padding: 10px 15px;
+	background-color: rgba(245, 245, 245, 0.7);
+	border-bottom: 1px solid #ddd;
+	border-radius: 3px 3px 0 0;
+	position: relative;
+	overflow: visible;
+	width: 100%;
+}
+
+.nav-tabs {
+	margin-bottom: 15px;
+}
+
+.search-section {
+	margin-bottom: 30px;
+}
+
+.unified-search-form {
+	max-width: 600px;
+	margin: 0 auto 15px;
+}
+
+.search-addon {
+	background: white;
+	border-right: none;
+}
+
+.search-icon {
+	color: #999;
+}
+
+.search-input {
+	background-color: rgba(245, 245, 245, 0.5);
+	transition: background-color 1s;
+	border-left: none;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.search-input:hover,
+.search-input:focus {
+	background-color: rgba(245, 245, 245, 0.9);
+}
+
+.search-engines-tabs {
+	display: flex;
+	gap: 10px;
+	flex-wrap: wrap;
+	justify-content: center;
+}
+
+.search-engine-tab {
+	position: relative;
+	padding: 10px 20px;
+	border: 1px solid #ddd;
+	border-radius: 20px;
+	background: white;
+	cursor: pointer;
+	transition: all 0.3s;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.search-engine-actions {
+	margin-left: 8px;
+}
+
+.action-icon {
+	cursor: pointer;
+}
+
+.action-icon.edit {
+	color: #2196f3;
+}
+
+.action-icon.delete {
+	color: #f44336;
+	margin-left: 5px;
+}
+
+.add-search-engine-tab {
+	border: 2px dashed #4caf50;
+	background: transparent;
+	color: #4caf50;
+}
+
+.link-module {
+	background-color: rgba(245, 245, 245, 0.5);
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), 0 6px 20px rgba(0, 0, 0, 0.19);
+	transition: background-color 1s, border 0.3s;
+	margin-bottom: 20px;
+}
+
+.panel-drag-icon {
+	margin-right: 8px;
+}
+
+.link-module:hover {
+	background-color: rgba(245, 245, 245, 0.9);
+}
+
+#app.edit-mode .panel.link-module {
+	border: 2px dashed #46a3ff !important;
+}
+
+#app.edit-mode .panel.link-module:hover {
+	border: 2px dashed #2d8fdf !important;
+}
+
+.search-engine-tab.active {
+	background: #2196f3 !important;
+	color: white !important;
+	border-color: #2196f3 !important;
+}
+
+.search-engine-tab.active i {
+	color: white !important;
+}
+
+.search-engine-tab:hover:not(.active) {
+	background: #f5f5f5 !important;
+}
+
+.search-engine-tab.edit-mode-border {
+	border: 2px dashed #46a3ff !important;
+}
+
+.search-engine-tab.edit-mode-border:hover {
+	border-color: #2d8fdf !important;
+}
+
+.link-module a {
+	border-radius: 5px;
+	color: #000;
+	text-align: center;
+	text-decoration: none;
+	font-size: 1.3em;
+	line-height: 2em;
+	transition: background-color 0.5s;
+	display: block;
+	padding: 5px;
+	position: relative;
+}
+
+.link-module a:hover {
+	background-color: #696969;
+	color: #f5f5f5;
+	text-decoration: none;
+}
+
+.add-link-tile {
+	color: green;
+	cursor: pointer;
+	text-align: center;
+	padding: 5px;
+	border-radius: 5px;
+	transition: background-color 0.5s;
+	line-height: 2em;
+	font-size: 1.3em;
+}
+
+.add-link-tile:hover {
+	background-color: #e8f5e9;
+}
+
+.fab-container {
+	position: fixed;
+	bottom: 30px;
+	right: 30px;
+	z-index: 1000;
+}
+
+.fab-main {
+	width: 56px;
+	height: 56px;
+	border-radius: 50%;
+	background: #2196f3;
+	color: white;
+	border: none;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+	cursor: pointer;
+	font-size: 24px;
+	transition: all 0.3s;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.fab-main:hover {
+	background: #1976d2;
+	transform: scale(1.1);
+}
+
+.fab-main.active {
+	background: #1976d2;
+	transform: rotate(45deg);
+}
+
+.fab-menu {
+	position: absolute;
+	bottom: 70px;
+	right: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	opacity: 0;
+	visibility: hidden;
+	transition: all 0.3s;
+}
+
+.fab-menu.active {
+	opacity: 1;
+	visibility: visible;
+}
+
+.fab-item {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	gap: 10px;
+}
+
+.fab-label {
+	background: white;
+	padding: 8px 12px;
+	border-radius: 4px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+	font-size: 14px;
+	white-space: nowrap;
+	color: #333;
+}
+
+.fab-button {
+	width: 48px;
+	height: 48px;
+	border-radius: 50%;
+	border: none;
+	color: white;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+	cursor: pointer;
+	font-size: 18px;
+	transition: all 0.3s;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.fab-button:hover {
+	transform: scale(1.1);
+}
+
+.fab-button.edit {
+	background: #4caf50;
+}
+
+.fab-button.edit.active {
+	background: #388e3c;
+}
+
+.fab-button.settings {
+	background: #ff9800;
+}
+
+.fab-button.settings:hover {
+	background: #f57c00;
+}
+
+.search-engine-tab.active i,
+.fab-main i,
+.fab-button i,
+.search-engine-tab .fa {
+	color: inherit;
+}
+
+.add-module-text {
+	margin-top: 10px;
+	font-size: 18px;
+	color: #999;
+}
+
+.clear-both {
+	clear: both;
+}
+
+.settings-section {
+	margin-top: 20px;
+}
+
+.file-input-control {
+	height: auto;
+	padding: 6px 12px;
+}
+
+.btn-margin-top {
+	margin-top: 10px;
+}
+
+.preset-button {
+	margin: 5px;
 }

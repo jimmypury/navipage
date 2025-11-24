@@ -15,9 +15,25 @@
       "id": 1,
       "title": "常用链接",
       "links": [
-        { "id": 1, "title": "GitHub", "url": "https://github.com/", "icon": "fa-github", "iconType": "fa" },
-        { "id": 2, "title": "Gmail", "url": "https://www.gmail.com/", "icon": "fa-envelope-o", "iconType": "fa" }
+        {
+          "id": 1,
+          "title": "GitHub",
+          "url": "https://github.com/",
+          "icon": "fa-github",
+          "iconType": "fa"
+        },
+        {
+          "id": 2,
+          "title": "Gmail",
+          "url": "https://www.gmail.com/",
+          "icon": "fa-envelope-o",
+          "iconType": "fa"
+        }
       ]
     }
-  ]
+  ],
+  "bgColor": "#f5f5f5",
+  "bgImageUrl": "",
+  "bgImageData": "",
+  "bgOpacity": 0.9
 }
