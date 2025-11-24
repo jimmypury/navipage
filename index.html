@@ -1,532 +1,407 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="Jimmy's Navi | Jimmy 的个人导航" />
-    <meta
-      name="keywords"
-      content="jimmy,jimmy's navi,navi,navigation,jimmy的导航,导航,jimmy的个人导航,jimmyho,jimmy's,jimmy ho,jimmy h.,jimmy's blog"
-    />
-    <meta name="author" content="Jimmy Ho" />
-    <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <base target="_blank" />
-    <link rel="icon" href="/favicon.png" />
-    <title>Jimmy's Navi</title>
-    <link rel="stylesheet" href="/css/index.css" />
-    <link
-      rel="stylesheet"
-      href="//cdn.jimmyho.net/libs/bootstrap/3.3.7/css/bootstrap.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="//cdn.jimmyho.net/libs/font-awesome/4.7.0/css/font-awesome.min.css"
-    />
-    <!--[if lt IE 9]>
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Jimmy's Navi | Jimmy 的个人导航" />
+  <meta name="keywords"
+    content="jimmy,jimmy's navi,navi,navigation,jimmy的导航,导航,jimmy的个人导航,jimmyho,jimmy's,jimmy ho,jimmy h.,jimmy's blog" />
+  <meta name="author" content="Jimmy Ho" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <base target="_blank" />
+  <link rel="icon" href="/favicon.png" />
+  <title>Jimmy's Navi</title>
+  <link rel="stylesheet" href="//cdn.jimmyho.net/libs/bootstrap/3.3.7/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="//cdn.jimmyho.net/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="/css/index.css" />
+  <!--[if lt IE 9]>
       <script src="//cdn.jimmyho.net/libs/html5shiv/3.7.2/html5shiv.min.js"></script>
       <script src="//cdn.jimmyho.net/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-  </head>
-  <body>
+</head>
+
+<body>
+  <div id="app" :class="{'edit-mode': editMode}">
     <div class="container">
       <br />
       <div class="head">
         <h1>Jimmy's Navi</h1>
       </div>
       <br />
-      <!-- BaiduSearch -->
-      <br style="clear: both" />
-      <form action="https://www.baidu.com/s" method="GET" target="_self">
-        <div class="form-group">
-          <div class="input-group">
-            <div class="input-group-addon">
-              <i class="fa fa-search fa-lg"></i>
-            </div>
-            <input
-              id="baidusearch"
-              class="form-control input-lg"
-              name="wd"
-              onmouseover="this.focus()"
-              onfocus="this.select()"
-              autofocus="autofocus"
-              placeholder="Baidu"
-            />
+
+      <!-- 搜索引擎区域 -->
+      <div class="search-section">
+        <!-- 统一搜索框 -->
+        <form @submit="handleUnifiedSearch" class="unified-search-form">
+          <div class="input-group input-lg">
+            <span class="input-group-addon search-addon">
+              <i class="fa fa-search search-icon"></i>
+            </span>
+            <input v-model="searchQuery" type="text" class="form-control input-lg search-input"
+              :placeholder="'使用 ' + (selectedSearchEngine ? selectedSearchEngine.name : '搜索引擎') + ' 搜索'"
+              @focus="$event.target.select()" />
           </div>
+        </form>
+
+        <!-- 搜索引擎标签页 -->
+        <div class="search-engines-tabs" ref="searchEnginesContainer">
+          <button v-for="engine in searchEngines" :key="engine.id" :data-id="engine.id" class="search-engine-tab"
+            :class="{'active': selectedSearchEngineId === engine.id, 'edit-mode-border': editMode}"
+            @click="selectSearchEngine(engine.id)">
+            <i v-if="editMode" class="fa fa-bars drag-handle"></i>
+            <i class="fa" :class="engine.icon"></i>
+            <span>{{ engine.name }}</span>
+            <span v-if="editMode" class="search-engine-actions">
+              <i class="fa fa-edit action-icon edit" @click.stop="editSearchEngine(engine)" title="编辑"></i>
+              <i class="fa fa-trash action-icon delete" @click.stop="deleteSearchEngine(engine.id)" title="删除"></i>
+            </span>
+          </button>
+          <button v-if="editMode" class="search-engine-tab add-search-engine-tab"
+            @click="showAddSearchEngineModal = true">
+            <i class="fa fa-plus"></i>
+            <span>添加</span>
+          </button>
         </div>
-      </form>
-      <!-- GoogleSearch -->
-      <br style="clear: both" />
-      <form action="https://www.google.com/search" method="GET" target="_self">
-        <div class="form-group">
-          <div class="input-group">
-            <div class="input-group-addon">
-              <i class="fa fa-google fa-lg"></i>
-            </div>
-            <input
-              id="googlesearch"
-              class="form-control input-lg"
-              name="q"
-              maxlength="255"
-              onmouseover="this.focus()"
-              onfocus="this.select()"
-              placeholder="Google"
-            />
-          </div>
-        </div>
-      </form>
-      <!-- BingSearch -->
-      <br style="clear: both" />
-      <form action="https://www.bing.com/search" method="GET" target="_self">
-        <div class="form-group">
-          <div class="input-group">
-            <div class="input-group-addon">
-              <i class="fa fa-bold fa-lg"></i>
-            </div>
-            <input
-              id="bingsearch"
-              class="form-control input-lg"
-              name="q"
-              maxlength="255"
-              onmouseover="this.focus()"
-              onfocus="this.select()"
-              placeholder="Bing"
-            />
-          </div>
-        </div>
-      </form>
+      </div>
+
       <br />
-      <!-- Hyperlink -->
-      <!-- Hyperlink 日常 国内 -->
-      <div id="hyperlink-daily-domestic" class="panel panel-default">
-        <div class="panel-body">
-          <div class="row">
-            <a
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2"
-              title="有问题，就会有答案。"
-              href="https://www.zhihu.com/"
-              ><i class="fa fa-comments"></i> 知乎</a
-            >
-            <a
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2"
-              title="哔哩哔哩 (゜-゜)つロ 干杯~"
-              href="https://www.bilibili.com/"
-              ><i class="fa fa-video-camera"></i> BiliBili</a
-            >
-            <a
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2"
-              title="认真你就输啦 (・ω・)ノ- ( ゜- ゜)つロ"
-              href="http://www.acfun.cn/"
-              ><i class="fa fa-video-camera"></i> AcFun</a
-            >
-            <a
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2"
-              href="https://music.163.com/"
-              ><i class="fa fa-music"></i> 网易云音乐</a
-            >
-            <a
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2"
-              title="专注于动漫、音乐、游戏领域，帮助你分享、发现与结识同好的ACG网络。"
-              href="https://bangumi.tv/"
-              ><i class="fa fa-comments"></i> Bangumi</a
-            >
-            <a
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2"
-              title="动漫二次元、轻松有趣、真挚有情感的轻小说阅读平台。"
-              href="https://book.sfacg.com/"
-              ><i class="fa fa-book"></i> SF轻小说</a
-            >
-            <a
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2"
-              href="https://www.xiaomi.cn/"
-              ><i class="fa fa-comments"></i> 小米社区</a
-            >
+
+      <!-- 链接模块区域 -->
+      <div ref="modulesContainer">
+        <div v-for="module in modules" :key="module.id" :data-id="module.id" class="panel panel-default link-module">
+          <div v-if="module.title" class="panel-heading-custom" :class="{'drag-handle': editMode}">
+            <i v-if="editMode" class="fa fa-bars panel-drag-icon"></i>
+            <strong>{{ module.title }}</strong>
+            <div v-if="editMode" class="edit-buttons">
+              <button class="btn btn-xs btn-primary" @click="editModule(module)">
+                <i class="fa fa-edit"></i>
+              </button>
+              <button class="btn btn-xs btn-danger" @click="deleteModule(module.id)">
+                <i class="fa fa-trash"></i>
+              </button>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="row" :ref="el => { if (el) linkRowRefs[module.id] = el }">
+              <a v-for="link in module.links" :key="link.id" :data-link-id="link.id" :data-module-id="module.id"
+                :href="editMode ? 'javascript:void(0)' : link.url" :title="link.title"
+                class="col-xs-6 col-sm-4 col-md-3 col-lg-2" :class="{'link-item': editMode}"
+                @click="editMode && $event.preventDefault()">
+                <img v-if="link.iconType === 'image' && link.icon" :src="link.icon" class="link-favicon"
+                  @error="handleImageError($event, link)" />
+                <i v-else class="fa" :class="link.icon || 'fa-link'"></i>
+                {{ link.title }}
+                <span v-if="editMode" class="link-edit-icons" @click.stop.prevent>
+                  <i class="fa fa-edit action-icon edit" @click.stop.prevent="editLink(module, link)" title="编辑"></i>
+                  <i class="fa fa-trash action-icon delete" @click.stop.prevent="deleteLink(module, link.id)"
+                    title="删除"></i>
+                </span>
+              </a>
+              <div v-if="editMode" class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
+                <div class="add-link-tile" @click="addLink(module)">
+                  <i class="fa fa-plus-circle"></i> 添加链接
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-      <!-- Hyperlink 日常 国外 -->
-      <div id="hyperlink-daily-oversea" class="panel panel-default">
-        <div class="panel-body">
-          <div class="row">
-            <a
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2"
-              href="https://www.youtube.com/"
-              ><i class="fa fa-youtube"></i> Youtube</a
-            >
-            <a
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2"
-              href="https://www.twitter.com/"
-              ><i class="fa fa-twitter"></i> Twitter</a
-            >
-            <a
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2"
-              href="https://www.facebook.com/"
-              ><i class="fa fa-facebook"></i> Facebook</a
-            >
-            <a
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2"
-              href="https://telegram.org/"
-              ><i class="fa fa-telegram"></i> Telegram</a
-            >
-            <a
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2"
-              title="全日本最大的画作投稿社交站点"
-              href="https://www.pixiv.net/"
-              ><i class="fa fa-picture-o"></i> Pixiv</a
-            >
-            <a
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2"
-              href="https://www.icloud.com/"
-              ><i class="fa fa-cloud"></i> iCloud</a
-            >
-            <a
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2"
-              href="https://www.dropbox.com/"
-              ><i class="fa fa-dropbox"></i> Dropbox</a
-            >
-            <a
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2"
-              title="全平台文件同步网盘。"
-              href="https://onedrive.live.com/"
-              ><i class="fa fa-cloud"></i> OneDrive</a
-            >
-          </div>
+
+      <!-- 添加模块按钮 -->
+      <div v-if="editMode" class="panel panel-default add-module-btn" @click="showAddModuleModal = true">
+        <div class="panel-body text-center">
+          <i class="fa fa-plus-circle"></i>
+          <p class="add-module-text">添加链接模块</p>
         </div>
       </div>
-      <!-- Hyperlink 代码 -->
-      <div id="hyperlink-code" class="panel panel-default">
-        <div class="panel-body">
-          <div class="row">
-            <a
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2"
-              href="https://github.com/"
-              ><i class="fa fa-github"></i> GitHub</a
-            >
-            <a
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2"
-              href="https://gitee.com/"
-              ><i class="fa fa-code"></i> 码云</a
-            >
-            <a
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2"
-              href="https://gitlab.com/"
-              ><i class="fa fa-gitlab"></i> GitLab</a
-            >
-            <a
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2"
-              href="https://segmentfault.com/"
-              ><i class="fa fa-comments"></i> SegmentFault</a
-            >
-            <a
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2"
-              href="https://stackoverflow.com/"
-              ><i class="fa fa-stack-overflow"></i> StackOverflow</a
-            >
-            <a
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2"
-              href="https://leetcode-cn.com/"
-              ><i class="fa fa-code"></i> LeetCode(CN)</a
-            >
-            <a
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2"
-              href="https://www.w3schools.com/"
-              >W3Schools(Global)</a
-            >
-            <a
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2"
-              href="http://www.runoob.com/"
-              >菜鸟教程</a
-            >
-            <a
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2"
-              href="https://www.kernel.org/"
-              ><i class="fa fa-linux"></i> Linux Kernel</a
-            >
-          </div>
-        </div>
-      </div>
-      <!-- Hyperlink 学习 -->
-      <div id="hyperlink-learning" class="panel panel-default">
-        <div class="panel-body">
-          <div class="row">
-            <a
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2"
-              href="https://www.chaoxing.com/"
-              ><i class="fa fa-leanpub"></i> 超星学习通</a
-            >
-            <a
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2"
-              href="https://www.icourse163.org/"
-              ><i class="fa fa-leanpub"></i> 中国大学MOOC</a
-            >
-            <a
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2"
-              href="https://www.zhihuishu.com/"
-              ><i class="fa fa-leanpub"></i> 知到 - 智慧树</a
-            >
-            <a
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2"
-              href="https://www.chsi.com.cn/"
-              ><i class="fa fa-graduation-cap"></i> 学信网</a
-            >
-            <a
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2"
-              href="https://yz.chsi.com.cn/"
-              ><i class="fa fa-graduation-cap"></i> 研招网</a
-            >
-            <a
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2"
-              href="https://scholar.google.com/"
-              ><i class="fa fa-google"></i> Google学术</a
-            >
-            <a
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2"
-              href="https://www.cnki.net/"
-              ><i class="fa fa-leanpub"></i> 中国知网</a
-            >
-          </div>
-        </div>
-      </div>
-      <!-- Hyperlink 邮箱 -->
-      <div id="hyperlink-mail" class="panel panel-default">
-        <div class="panel-body">
-          <div class="row">
-            <a
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2"
-              href="https://www.outlook.com/"
-              ><i class="fa fa-envelope-o"></i> Outlook</a
-            >
-            <a
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2"
-              href="https://www.gmail.com/"
-              ><i class="fa fa-envelope-o"></i> Gmail</a
-            >
-            <a
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2"
-              href="https://mail.qq.com/"
-              ><i class="fa fa-envelope-o"></i> QQ邮箱</a
-            >
-            <a
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2"
-              href="https://email.163.com/"
-              ><i class="fa fa-envelope-o"></i> 网易邮箱</a
-            >
-            <a
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2"
-              href="https://protonmail.com/"
-              ><i class="fa fa-shield"></i> ProtonMail</a
-            >
-          </div>
-        </div>
-      </div>
-      <!-- Hyperlink 工具 -->
-      <div id="hyperlink-tool" class="panel panel-default">
-        <div class="panel-body">
-          <div class="row">
-            <a
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2"
-              href="https://translate.google.com/"
-              ><i class="fa fa-language"></i> Google翻译(Global)</a
-            >
-            <a
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2"
-              href="https://translate.google.cn/"
-              ><i class="fa fa-language"></i> Google翻译(CN)</a
-            >
-            <a
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2"
-              href="https://fanyi.baidu.com/"
-              ><i class="fa fa-language"></i> 百度翻译</a
-            >
-            <a
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2"
-              href="https://tool.lu/"
-              ><i class="fa fa-wrench"></i> 在线工具</a
-            >
-            <a
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2"
-              href="http://ip.zxinc.org/ipquery/"
-              ><i class="fa fa-search"></i> IP查询(ZX)</a
-            >
-            <a
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2"
-              href="https://geoip.neu.edu.cn/"
-              ><i class="fa fa-search"></i> IP查询(NEU)</a
-            >
-            <a
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2"
-              href="https://mirrors.tuna.tsinghua.edu.cn/"
-              ><i class="fa fa-server"></i> 镜像站(THU)</a
-            >
-            <a
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2"
-              href="https://mirrors.ustc.edu.cn/"
-              ><i class="fa fa-server"></i> 镜像站(USTC)</a
-            >
-            <a
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2"
-              href="https://www.speedtest.net/"
-              ><i class="fa fa-tachometer"></i> SpeedTest</a
-            >
-            <a
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2"
-              href="https://glados.rocks/"
-              ><i class="fa fa-plane"></i> GLaDOS</a
-            >
-          </div>
-        </div>
-      </div>
-      <!-- Hyperlink 购物 -->
-      <div id="hyperlink-shop" class="panel panel-default">
-        <div class="panel-body">
-          <div class="row">
-            <a
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2"
-              title="淘你喜欢~"
-              href="https://www.taobao.com/"
-              ><i class="fa fa-shopping-cart"></i> 淘宝</a
-            >
-            <a
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2"
-              href="https://www.jd.com/"
-              ><i class="fa fa-shopping-cart"></i> 京东</a
-            >
-            <a
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2"
-              href="https://www.suning.com/"
-              ><i class="fa fa-shopping-cart"></i> 苏宁易购</a
-            >
-            <a
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2"
-              href="https://www.amazon.com/"
-              ><i class="fa fa-amazon"></i> 亚马逊国际</a
-            >
-            <a
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2"
-              href="https://www.mi.com/"
-              ><i class="fa fa-shopping-cart"></i> 小米商城</a
-            >
-            <a
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2"
-              title="-99%"
-              href="https://store.steampowered.com/"
-              ><i class="fa fa-steam"></i> Steam</a
-            >
-            <a
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2"
-              href="https://www.189.cn/"
-              >中国电信</a
-            >
-            <a
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2"
-              href="https://www.apple.com/"
-              ><i class="fa fa-apple"></i> Apple</a
-            >
-            <a
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2"
-              href="https://www.dlsite.com/"
-              ><i class="fa fa-shopping-cart"></i> DLsite</a
-            >
-          </div>
-        </div>
-      </div>
-      <!-- Hyperlink 本人网站 -->
-      <div id="hyperlink-personal" class="panel panel-default">
-        <div class="panel-body">
-          <div class="row">
-            <a
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2"
-              title="萌新的博客"
-              href="https://blog.jimmyho.net/"
-              ><i class="fa fa-rss"></i> Jimmy's Blog</a
-            >
-            <a
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2"
-              title="个人Wiki"
-              href="https://docs.jimmyho.net/"
-              ><i class="fa fa-wikipedia-w"></i> Jimmy's Wiki</a
-            >
-            <a
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2"
-              title="自己的轻社区"
-              href="https://forum.jimmyho.net/"
-              ><i class="fa fa-comments"></i> Jimmy's Forum</a
-            >
-            <a
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2"
-              title="萌新的工具箱"
-              href="https://tools.jimmyho.net/"
-              ><i class="fa fa-wrench"></i> Jimmy's Toolbox</a
-            >
-            <a
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2"
-              title="moe萌图库"
-              href="https://img.jimmyho.net/"
-              ><i class="fa fa-picture-o"></i> Jimmy's Image</a
-            >
-          </div>
-        </div>
-      </div>
-      <br style="clear: both" />
+
+      <br class="clear-both" />
       <div class="foot">
         <p>
-          <strong
-            >&copy;
+          <strong>&copy;
             <script>
               var year = new Date();
               year = year.getFullYear();
               document.write(year);
             </script>
-            <a href="https://navi.jimmyho.net/" target="_self"
-              >Jimmy's Navi</a
-            ></strong
-          >
-          | 当前呈现版本 1.6.1 |
+            <a href="https://navi.jimmyho.net/" target="_self">Jimmy's Navi</a>
+          </strong>
+          | 当前呈现版本 {{ versionInfo.APP }} |
           <strong><a href="https://status.jimmyho.net/">服务器状态</a></strong>
         </p>
         <p>
           本页内容采用
-          <strong
-            ><a
-              rel="license"
-              href="https://creativecommons.org/licenses/by-nc-sa/4.0/"
-              >知识共享署名-非商业性使用-相同方式共享 4.0 国际</a
-            ></strong
-          >
+          <strong><a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">知识共享署名-非商业性使用-相同方式共享 4.0
+              国际</a></strong>
           进行许可
         </p>
       </div>
     </div>
-    <script>
-      (function (i, s, o, g, r, a, m) {
-        i["GoogleAnalyticsObject"] = r;
-        (i[r] =
-          i[r] ||
-          function () {
-            (i[r].q = i[r].q || []).push(arguments);
-          }),
-          (i[r].l = 1 * new Date());
-        (a = s.createElement(o)), (m = s.getElementsByTagName(o)[0]);
-        a.async = 1;
-        a.src = g;
-        m.parentNode.insertBefore(a, m);
-      })(
-        window,
-        document,
-        "script",
-        "https://www.google-analytics.com/analytics.js",
-        "ga"
-      );
-      ga("create", "UA-101978821-6", "auto");
-      ga("send", "pageview");
-    </script>
-    <script
-      defer
-      src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015"
-      integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ=="
-      data-cf-beacon='{"version":"2024.11.0","token":"0fc7521045464e93b54549e58ed41160","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}'
-      crossorigin="anonymous"
-    ></script>
-  </body>
+
+    <!-- 右下角悬浮按钮 -->
+    <div class="fab-container">
+      <div class="fab-menu" :class="{active: fabMenuOpen}">
+        <div class="fab-item">
+          <span class="fab-label">{{ editMode ? '完成编辑' : '编辑模式' }}</span>
+          <button class="fab-button edit" :class="{active: editMode}" @click="toggleEditMode"
+            :title="editMode ? '完成编辑' : '编辑模式'">
+            <i class="fa" :class="editMode ? 'fa-check' : 'fa-edit'"></i>
+          </button>
+        </div>
+        <div class="fab-item">
+          <span class="fab-label">设置</span>
+          <button class="fab-button settings" @click="showSettingsModal = true; fabMenuOpen = false" title="设置">
+            <i class="fa fa-cog"></i>
+          </button>
+        </div>
+      </div>
+      <button class="fab-main" :class="{active: fabMenuOpen}" @click="fabMenuOpen = !fabMenuOpen" title="菜单">
+        <i class="fa fa-plus"></i>
+      </button>
+    </div>
+
+    <!-- 设置模态框 -->
+    <div v-if="showSettingsModal" class="modal" @click.self="showSettingsModal = false">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" @click="showSettingsModal = false">
+              &times;
+            </button>
+            <h4 class="modal-title">设置</h4>
+          </div>
+          <div class="modal-body">
+            <ul class="nav nav-tabs">
+              <li :class="{active: settingsTab === 'background'}">
+                <a href="#" @click.prevent="settingsTab = 'background'">背景设置</a>
+              </li>
+              <li :class="{active: settingsTab === 'import-export'}">
+                <a href="#" @click.prevent="settingsTab = 'import-export'">导入/导出</a>
+              </li>
+              <li :class="{active: settingsTab === 'presets'}">
+                <a href="#" @click.prevent="settingsTab = 'presets'">预设配置</a>
+              </li>
+            </ul>
+
+            <div v-show="settingsTab === 'background'" class="settings-section">
+              <div class="form-group">
+                <label>背景颜色</label>
+                <input type="color" v-model="bgColor" class="form-control" />
+              </div>
+              <div class="form-group">
+                <label>背景图片URL</label>
+                <input type="text" v-model="bgImageUrl" class="form-control" placeholder="留空使用纯色背景" />
+              </div>
+              <div class="form-group">
+                <label>上传背景图片</label>
+                <input type="file" @change="handleBgImageUpload" accept="image/*"
+                  class="form-control file-input-control" />
+              </div>
+              <div class="form-group">
+                <label>背景不透明度 ({{ bgOpacity }})</label>
+                <input type="range" v-model.number="bgOpacity" min="0" max="1" step="0.1" class="form-control" />
+              </div>
+              <button class="btn btn-primary" @click="applyBackground">
+                应用背景
+              </button>
+            </div>
+
+            <div v-show="settingsTab === 'import-export'" class="settings-section">
+              <div class="form-group">
+                <label>导出配置 (JSON)</label>
+                <textarea v-model="exportedConfig" class="form-control" rows="10" readonly></textarea>
+                <button class="btn btn-primary btn-margin-top" @click="downloadConfig">
+                  <i class="fa fa-download"></i> 下载配置文件
+                </button>
+              </div>
+              <div class="form-group">
+                <label>导入配置 (JSON)</label>
+                <textarea v-model="importedConfig" class="form-control" rows="10" placeholder="粘贴JSON配置"></textarea>
+                <button class="btn btn-success btn-margin-top" @click="importFromJSON">
+                  <i class="fa fa-upload"></i> 从JSON导入
+                </button>
+              </div>
+              <div class="form-group">
+                <label>上传配置文件</label>
+                <input type="file" @change="handleConfigUpload" accept=".json"
+                  class="form-control file-input-control" />
+              </div>
+            </div>
+
+            <div v-show="settingsTab === 'presets'" class="settings-section">
+              <p>选择预设配置快速加载：</p>
+              <button v-for="preset in presets" :key="preset.name" class="btn btn-default preset-button"
+                @click="loadPreset(preset.key)">
+                {{ preset.name }}
+              </button>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" @click="showSettingsModal = false">
+              关闭
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 添加/编辑模块模态框 -->
+    <div v-if="showAddModuleModal || showEditModuleModal" class="modal" @click.self="closeModuleModal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" @click="closeModuleModal">
+              &times;
+            </button>
+            <h4 class="modal-title">
+              {{ showEditModuleModal ? '编辑模块' : '添加模块' }}
+            </h4>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label>模块标题</label>
+              <input type="text" v-model="currentModule.title" class="form-control" />
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" @click="closeModuleModal">
+              取消
+            </button>
+            <button type="button" class="btn btn-primary" @click="saveModule">
+              保存
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 添加/编辑链接模态框 -->
+    <div v-if="showAddLinkModal || showEditLinkModal" class="modal" @click.self="closeLinkModal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" @click="closeLinkModal">
+              &times;
+            </button>
+            <h4 class="modal-title">
+              {{ showEditLinkModal ? '编辑链接' : '添加链接' }}
+            </h4>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label>链接标题</label>
+              <input type="text" v-model="currentLink.title" class="form-control" />
+            </div>
+            <div class="form-group">
+              <label>链接URL</label>
+              <input type="text" v-model="currentLink.url" class="form-control" />
+            </div>
+            <div class="form-group">
+              <label>图标类型</label>
+              <select v-model="currentLink.iconType" class="form-control">
+                <option value="fa">Font Awesome</option>
+                <option value="image">图片URL/Favicon</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>{{ currentLink.iconType === 'fa' ? 'Font Awesome类名 (如: fa-github)' : '图片URL (留空自动获取favicon)'
+                }}</label>
+              <input type="text" v-model="currentLink.icon" class="form-control"
+                :placeholder="currentLink.iconType === 'image' ? '留空自动获取favicon' : 'fa-link'" />
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" @click="closeLinkModal">
+              取消
+            </button>
+            <button type="button" class="btn btn-primary" @click="saveLink">
+              保存
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 添加/编辑搜索引擎模态框 -->
+    <div v-if="showAddSearchEngineModal || showEditSearchEngineModal" class="modal"
+      @click.self="closeSearchEngineModal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" @click="closeSearchEngineModal">
+              &times;
+            </button>
+            <h4 class="modal-title">
+              {{ showEditSearchEngineModal ? '编辑搜索引擎' : '添加搜索引擎'
+              }}
+            </h4>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label>搜索引擎名称</label>
+              <input type="text" v-model="currentSearchEngine.name" class="form-control" />
+            </div>
+            <div class="form-group">
+              <label>搜索URL (包含查询参数)</label>
+              <input type="text" v-model="currentSearchEngine.searchUrl" class="form-control"
+                placeholder="https://www.google.com/search" />
+            </div>
+            <div class="form-group">
+              <label>查询参数名</label>
+              <input type="text" v-model="currentSearchEngine.queryParam" class="form-control" placeholder="q" />
+            </div>
+            <div class="form-group">
+              <label>图标 (Font Awesome类名)</label>
+              <input type="text" v-model="currentSearchEngine.icon" class="form-control" placeholder="fa-search" />
+            </div>
+            <div class="form-group">
+              <label>首页URL (可选，留空搜索时跳转搜索结果)</label>
+              <input type="text" v-model="currentSearchEngine.homeUrl" class="form-control"
+                placeholder="https://www.google.com" />
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" @click="closeSearchEngineModal">
+              取消
+            </button>
+            <button type="button" class="btn btn-primary" @click="saveSearchEngine">
+              保存
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@3.3.4/dist/vue.global.prod.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+  <script src="/js/app.js"></script>
+  <script>
+    (function (i, s, o, g, r, a, m) {
+      i["GoogleAnalyticsObject"] = r;
+      (i[r] =
+        i[r] ||
+        function () {
+          (i[r].q = i[r].q || []).push(arguments);
+        }),
+        (i[r].l = 1 * new Date());
+      (a = s.createElement(o)), (m = s.getElementsByTagName(o)[0]);
+      a.async = 1;
+      a.src = g;
+      m.parentNode.insertBefore(a, m);
+    })(
+      window,
+      document,
+      "script",
+      "https://www.google-analytics.com/analytics.js",
+      "ga"
+    );
+    ga("create", "UA-101978821-6", "auto");
+    ga("send", "pageview");
+  </script>
+</body>
+
 </html>
