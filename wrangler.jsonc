@@ -2,7 +2,6 @@
   "name": "navipage",
   "compatibility_date": "2025-11-24",
   "assets": {
-    "directory": ".",
-    "binding": "ASSETS"
+    "directory": "."
   }
 }
