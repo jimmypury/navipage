@@ -1,0 +1,23 @@
+{
+  "name": "极简配置",
+  "searchEngines": [
+    {
+      "id": 1,
+      "name": "Google",
+      "searchUrl": "https://www.google.com/search",
+      "homeUrl": "https://www.google.com",
+      "queryParam": "q",
+      "icon": "fa-google"
+    }
+  ],
+  "modules": [
+    {
+      "id": 1,
+      "title": "常用链接",
+      "links": [
+        { "id": 1, "title": "GitHub", "url": "https://github.com/", "icon": "fa-github", "iconType": "fa" },
+        { "id": 2, "title": "Gmail", "url": "https://www.gmail.com/", "icon": "fa-envelope-o", "iconType": "fa" }
+      ]
+    }
+  ]
+}
